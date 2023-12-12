@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Checkout - Evergrow</title>
+    <title>Evergrow</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/main.css"> <!-- Assuming main.css is in the public directory -->
+    <link rel="stylesheet" href="/less/styles.css "> <!-- Assuming styles.css is in the public/less directory -->
+    <link rel="icon" href="/images/leaf.png" type="image/x-icon"/> <!-- Assuming images folder is in the public directory -->
+    <script type="text/javascript" src="/js/script.js"></script> <!-- Assuming script.js is in the public directory -->
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="/" class="nav-branding">Evergrow</a>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/flowers" class="nav-link">Flowers</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/fruits" class="nav-link">Fruits</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/herbs" class="nav-link">Herbs</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/veggies" class="nav-link">Veggies</a>
+                </li>       
+                <li class="nav-item">
+                    <a href="support.html" class="nav-link">Support</a>
+                </li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            <div class="cart">
+                <img src="/images/shopping_cart.png" width="32px", height="30px">
+            </div>
+        </nav> 
+    </header>
+
+    <h1>Checkout</h1>
+
+    <div id="checkout-items">
+        <!-- Display checkout items and form for user information here using EJS templating -->
+        <% shoppingCart.forEach(item => { %>
+            <div class="checkout-item">
+                <p><strong><%= item.name %></strong></p>
+                <p>Price: $<%= item.price.toFixed(2) %></p>
+                <!-- Add more details or options here -->
+            </div>
+        <% }); %>
+
+        <!-- Add a form for user information and payment details -->
+        <form action="/complete-order" method="post">
+            <!-- Add form fields here -->
+            <button type="submit">Complete Order</button>
+        </form>
+    </div>
+
+    <footer>
+        <!-- Add your footer content here -->
+    </footer>
+</body>
+
+</html>

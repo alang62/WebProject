@@ -1,0 +1,212 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+
+}
+
+header{
+    background-color:#262626;
+
+}
+
+li{
+    list-style: none;
+
+}
+
+a{
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.navbar{
+    min-height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+
+}
+
+.nav-menu{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 60px;
+}
+
+.nav-branding{
+    font-size: 4rem;
+}
+
+.nav-link{
+    transition: 0.7s ease;
+}
+
+.hamburger{
+    display: none;
+    cursor: pointer;
+
+}
+
+
+.bar{
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    background-color:rgb(75, 167, 52)
+}
+
+@media(max-width: 800px){
+    .hamburger{
+        display: block;
+    }
+    .hamburger.active .bar:nth-child(2){
+        opacity: 0;
+    }
+    .hamburger.active .bar:nth-child(1){
+        transform: translateY(8px) rotate(45deg);
+    }
+    .hamburger.active .bar:nth-child(3){
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .nav-menu{
+        position: fixed;
+        left: -100%;
+        top: 70px;
+        gap: 0;
+        flex-direction: column;
+        background-color:#262626;
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+    }
+
+    .nav-item{
+        margin: 16px 0;
+    }
+
+    .nav-menu.active{
+        left: 0;
+    }
+}
+
+
+
+body {
+    font-family: "KaiTi", "Mongolian Baiti", "Myriad Pro", "DejaVu Sans Condensed", Helvetica, Arial, "sans-serif";
+    color: rgb(0, 0, 0);
+    font-size: 14px;
+}
+
+h1 {
+    font-size: 26px;
+    font-weight: bold;
+    color:rgb(23, 112, 1)
+}
+
+h2 {
+    font-size: 22px;
+    color:rgb(23, 112, 1)
+}
+
+h3 {
+    font-size: 18px;
+    color:rgb(23, 112, 1)
+}
+
+li{
+    color:rgb(23, 112, 1)
+}
+
+.cart {
+    background-color: rgb(75, 167, 52);
+    border-radius: 25px;
+    padding: 6px;   
+}
+
+.bubbles {
+    background-color:rgb(75, 167, 52);
+    border-radius: 25px;
+    padding: 6px;
+}
+
+.buttonbar {
+    background-color: rgb(75, 167, 52);
+    border-radius: 5px;
+    padding: 10px;
+    color: rgb(0, 0, 0);
+}
+
+.inputLabel {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+input.inputField {
+    padding: 5px;
+    border: 1px solid rgb(75, 167, 52);
+}
+
+div.box {
+    height: 100px;
+    width: 100px;
+    display: inline-block;
+    margin: 0 10px 0 10px;
+}
+
+#primary1 {
+    background-color: rgb(13, 126, 32);
+}
+
+#primary2 {
+    background-color: rgb(75, 167, 52);
+}
+
+#primary3 {
+    background-color: rgba(138, 206, 50, 0.815);
+}
+
+.warning {
+    background-color: yellow;
+    font-weight: bold;
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.danger {
+    background-color: red;
+    font-weight: bold;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.success {
+    background-color: green;
+    font-weight: bold;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+svg.svg-inline--fa {
+    color: white;
+}
+
+.spacer {
+    margin-top: 25px;
+}
+
+#footer {
+    border-top: 1px solid #dddddd;
+    margin-top: 50px;
+    padding: 10px;
+    text-align: center;
+}

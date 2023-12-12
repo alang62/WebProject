@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en"
+
+<head>
+    <title>Evergrow</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="less/styles.css">
+    <link rel="icon" href="images/leaf.png" type="image/x-icon"/>
+    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="js/mustache.js"></script>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="/" class="nav-branding">Evergrow</a>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/flowers" class="nav-link">Flowers</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/fruits" class="nav-link">Fruits</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/herbs" class="nav-link">Herbs</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/veggies" class="nav-link">Veggies</a>
+                </li>       
+                <li class="nav-item">
+                    <a href="support.html" class="nav-link">Support</a>
+                </li>
+            </ul>
+
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+            <div class="cart">
+                <img src="images/shopping_cart.png" width="32px", height="30px">
+            </div>
+        </nav>    
+        
+    </header>
+
+
+    <div role="img" aria-label="Description of herbs page">
+        <img src="images/herbs_page.jpg" width="1920px", height="250px" alt="Various types of herbs are presented"/>   
+    </div>
+
+    <script id="template" type="x-tmpl-mustache">
+        <h1>{{category}} Seeds</h1>
+            <h2>
+                <ul>
+                    {{#items}}
+                        <li>{{name}}: {{price}} -<a href=""> Add to Cart</a></li>
+                    {{/items}}
+                </ul>
+            </h2>
+    </script>
+
+    <div id="target"></div>
+
+    <script>
+        $(document).ready(function(){
+            var template = $("#template").html();
+            Mustache.parse(template);
+
+                var category_id = 'C';
+                var path = window.location.pathname;
+                var match = path.match(/\/products\/(\d+)/);
+                if (match) {
+                    category_id=match[1];
+                }
+
+
+                $.get(`/api/v1/products/${String(category_id)}`, function(data) {
+                    console.log('Data received:', data);
+                    var category = getCategoryName(category_id);
+                    var rendered = Mustache.render(template, { items: data, category: category });
+                    $("#target").html(rendered);
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error('API Request Failed:', textStatus, errorThrown);
+                });
+
+
+                function getCategoryName(category_id) {
+                    switch (category_id) {
+                        case 'A': return 'Flowers';
+                        case 'B': return 'Fruit';
+                        case 'C': return 'Herbs';
+                        case 'D': return 'Veggies';
+                        default: return 'Unknown Category';
+                    }
+                }
+        });
+    </script>
+
+</body>
+
+<footer>
+    Copyright 2023
+</footer>
+
+</html>
