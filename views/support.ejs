@@ -6,10 +6,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/main.css"> 
-    <link rel="stylesheet" href="/less/styles.css "> 
-    <link rel="icon" href="/images/leaf.png" type="image/x-icon"/> 
-    <script type="text/javascript" src="/js/script.js"></script> 
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/less/styles.css">
+    <link rel="icon" href="/images/leaf.png" type="image/x-icon"/>
+    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/js/mustache.js"></script>
 </head>
 
 
@@ -35,6 +36,7 @@
                     <a href="/support" class="nav-link">Support</a>
                 </li>
             </ul>
+            
 
             <div class="hamburger">
                 <span class="bar"></span>
@@ -48,58 +50,45 @@
         
     </header>
 
+    <h1><center>SUPPORT</center></h1>
+
+    
 
     <div role="img" aria-label="Description of home page image">
-        <img src="/images/garden_home.jpg" width="1905px" height="250px" alt="Lush lawn with various plants and a wooden gazebo"/>   
+        <img src="images/support.jpg" width="1905px", height="250px" alt="Lush lawn with various plants and a wooden gazebo"/>   
     </div>
-
-
-    <div role="img" aria-label="5 columns showcasing visuals of veggies, herbs, fruits, plants, and flowers"></div>
+    <p></p>
     <div class="container">
-        <div class="columnContent">
-            <div class="col-sm-6"><img src="/images/veg_home.jpg" width="300px" height="170px"/><p>Whether it's something as simple as a bell pepper, or</p>
-            <p>something as unique as a colorful heirloom carrot,</p><p>Evergrow has the highest quality seeds for planting</p>
-            <p>right in your own back yard.</p></div>
-            <div class="col-sm-4"><img src="/images/herb_garden.webp" width="300px" height="170px"/><p>Why go to the store for old herbs when you can have</p>
-                <p>a beautiful, flavorful, handpicked selection right at home?</p><p>Our seeds come from high-quality vendors, whether</p>
-                <p>used for food or their nice aromas!</p></div>
-            </div>
+        <div class="columnContent"></div>
+            <div class="col-sm-3" style="background-color: rgb(75,167, 52); border-radius: 300px; padding: 20px;"><center><h2 style="color:black">Contact Us!</center></h2>
+            <p><center>1-999-999-9999</center></p>
+            <p><center><a href="evergrow@evergrow.com" style="color:black">evergrow@evergrow.com</a></center></p></div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-3" style="background-color: rgb(75,167, 52); border-radius: 300px; padding: 20px;"><center><h3 style="color:black">-</h3></center>
+            <center><h3 style="color:black">Product Order Help</h3></center>
+            <center><h3 style="color:black">-</h3></center></div>
+            <div class="col-sm-1"></div>
+            <div class="col-sm-3" style="background-color: rgb(75,167, 52); border-radius: 300px; padding: 20px;"><center><h2 style="color:black">Leave a review!</center></h2>
+                <center><p style="color:black">!! User Reviews Coming Soon !!</p></center>
+                <center><h3 style="color:black">-</h3></center></div>
     </div>
 
-    <div class="container">
-        <div class="columnContent">
-            <div class="col-sm-6"><img src="/images/fruit_home.jpg" width="300px" height="170px"/><p>From deliciously crisp apples, to beautiful heirloom tomatoes,</p>
-            <p>we offer seeds for most any fruit a household would ever</p><p> want or need! Our selection of fruit seeds is unmatched!</p></div>
-            <div class="col-sm-4"><img src="/images/flowers_home.jpg" width="300px" height="170px"/><p>Few things can compare to a luscious, beautiful</p>
-                <p>bed of flowers that you were responsible for growing.</p><p>Check out our extensive list of both common and unique</p>
-                <p>types of flowers.</p></div>
-            </div>
-    </div>
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCart()">&times;</span>
+            <h2>Shopping Cart</h2>
+            <ul id="cartItemsContainer"></ul>
+        </div>
+    </div> 
 
     <script>
+
         function openCart() {
-            fetchCartItems();
-            document.getElementById("cartModal").style.display = "block";
-        }
-
-        function removeCartItem(itemName) {
-            $.ajax({
-                url: "/cart/remove",
-                type: "DELETE",
-                contentType: "application/json",
-                data: JSON.stringify({ name: itemName }),
-                success: function (data) {
-                    console.log(data);
-                    fetchCartItems(); 
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.error('Error removing item from cart:', textStatus, errorThrown);
+                    fetchCartItems();
+                    document.getElementById("cartModal").style.display = "block";
                 }
-            });
-        }
-
-
         function fetchCartItems() {
+            // Make a GET request to fetch cart items
             $.get("/cart", function(data) {
                 console.log("Cart items received:", data);
                 updateCartModal(data);
@@ -130,7 +119,7 @@
         function closeCart() {
             document.getElementById("cartModal").style.display = "none";
         }
-
+        
         function redirectToCheckout() {
             window.location.href = "/checkout";
         }
@@ -143,7 +132,7 @@
             <ul id="cartItemsContainer"></ul>
             <button id="checkoutButton" onclick="redirectToCheckout()">Checkout</button>
         </div>
-    </div>   
+    </div> 
 
 
 
@@ -152,7 +141,5 @@
 <footer>
     Copyright 2023
 </footer>
-
-
 
 </html>

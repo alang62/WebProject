@@ -6,11 +6,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="less/styles.css">
-    <link rel="icon" href="images/leaf.png" type="image/x-icon"/>
-    <script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="js/mustache.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/less/styles.css">
+    <link rel="icon" href="/images/leaf.png" type="image/x-icon"/>
+    <script type="text/javascript" src="/js/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="/js/mustache.js"></script>
 </head>
 
 <body>
@@ -32,17 +32,21 @@
                     <a href="/veggies" class="nav-link">Veggies</a>
                 </li>       
                 <li class="nav-item">
-                    <a href="support.html" class="nav-link">Support</a>
+                    <a href="/support" class="nav-link">Support</a>
                 </li>
-
             </ul>
+            
+            <form action="/search" method="GET">
+                <input type="text" name="q" placeholder="Search products">
+                <button type="submit">Search</button>
+            </form>
 
             <div class="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
                 <span class="bar"></span>
             </div>
-            <div class="cart">
+            <div class="cart" onclick="openCart()">
                 <img src="images/shopping_cart.png" width="32px", height="30px">
             </div>
         </nav>    
@@ -51,43 +55,60 @@
 
 
     <div role="img" aria-label="Description of fruits page">
-        <img src="images/fruits_page.jpg" width="1920px", height="250px" alt="Various types of herbs are presented"/>   
+        <img src="images/fruits_page.jpg" width="1920px", height="250px" alt="Various types of fruits are presented"/>   
     </div>
 
     <script id="template" type="x-tmpl-mustache">
-    <h1>{{category}} Seeds</h1>
-        <h2>
-            <ul>
-                {{#items}}
-                    <li>{{name}}: {{price}} -<a href=""> Add to Cart</a></li>
-                {{/items}}
-            </ul>
-        </h2>
+        <h1>{{category}} Seeds</h1>
+            <h2>
+                <ul>
+                    {{#items}}
+                        <li>{{name}}: ${{price}} - <a href="#" onclick="addToCart('{{name}}', {{price}})">Add to Cart</a></li>
+                    {{/items}}
+                </ul>
+            </h2>
     </script>
+    
 
     <div id="target"></div>
 
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
+            // Handle form submission for search
+            $('form').submit(function(event) {
+                event.preventDefault();
+
+                const searchTerm = $('input[name="q"]').val();
+
+                $.get(`/search?q=${searchTerm}`, function(data) {
+                    console.log('Search results:', data);
+
+                    displaySearchResults(data);
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error('Search failed:', textStatus, errorThrown);
+                });
+            });
+
+            // Existing code for rendering category products
             var template = $("#template").html();
             Mustache.parse(template);
 
-                var category_id = 'B';
-                var path = window.location.pathname;
-                var match = path.match(/\/products\/(\d+)/);
-                if (match) {
-                    category_id=match[1];
-                }
+            var category_id = 'B';
+            var path = window.location.pathname;
+            var match = path.match(/\/products\/(\d+)/);
+            if (match) {
+                category_id = match[1];
+            }
 
+            $.get(`/api/v1/products/${String(category_id)}`, function(data) {
+                console.log('Data received:', data);
+                var category = getCategoryName(category_id);
+                var rendered = Mustache.render(template, { items: data, category: category });
+                $("#target").html(rendered);
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('API Request Failed:', textStatus, errorThrown);
+            });
 
-                $.get(`/api/v1/products/${String(category_id)}`, function(data) {
-                    console.log('Data received:', data);
-                    var category = getCategoryName(category_id);
-                    var rendered = Mustache.render(template, { items: data, category: category });
-                    $("#target").html(rendered);
-                }).fail(function(jqXHR, textStatus, errorThrown) {
-                    console.error('API Request Failed:', textStatus, errorThrown);
-                });
 
 
                 function getCategoryName(category_id) {
@@ -99,8 +120,95 @@
                         default: return 'Unknown Category';
                     }
                 }
+
+                function displaySearchResults(results) {
+                    console.log('Search results:', results);
+                    var rendered = Mustache.render(template, { items: results, category: 'Search Results' });
+                    $("#target").html(rendered);
+                }
+
         });
     </script>
+
+    <script>
+        function addToCart(name, price) {
+            const item = { name, price };
+            console.log('Adding item to cart:', item);
+
+            $.post("/cart/add", item, function (data) {
+                console.log("Item added to cart:", data);
+                fetchCartItems();                    
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.error('Error adding item to cart:', textStatus, errorThrown);
+            });
+        }
+
+        function openCart() {
+            fetchCartItems();
+            document.getElementById("cartModal").style.display = "block";
+        }
+
+        function removeCartItem(itemName) {
+            $.ajax({
+                url: "/cart/remove",
+                type: "DELETE", 
+                contentType: "application/json",
+                data: JSON.stringify({ name: itemName }),
+                success: function (data) {
+                    console.log(data);
+                    fetchCartItems();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error('Error removing item from cart:', textStatus, errorThrown);
+                }
+            });
+        }
+
+
+        function fetchCartItems() {
+            $.get("/cart", function(data) {
+                console.log("Cart items received:", data);
+                updateCartModal(data);
+
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                console.error('Error fetching cart items:', textStatus, errorThrown);
+            });
+        }
+
+        function updateCartModal(cartItems) {
+            const cartItemsContainer = $("#cartItemsContainer");
+            cartItemsContainer.empty();
+
+            cartItems.forEach(function (item) {
+                const listItem = $("<li>").text(`${item.name}: $${item.price}`);
+
+                const removeButton = $("<button>")
+                    .text("Remove")
+                    .click(function () {
+                        removeCartItem(item.name);
+                    });
+
+                listItem.append(removeButton);
+                cartItemsContainer.append(listItem);
+            });
+        }
+
+        function closeCart() {
+            document.getElementById("cartModal").style.display = "none";
+        }
+        function redirectToCheckout() {
+            window.location.href = "/checkout";
+        }
+    </script>
+
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeCart()">&times;</span>
+            <h2>Shopping Cart</h2>
+            <ul id="cartItemsContainer"></ul>
+            <button id="checkoutButton" onclick="redirectToCheckout()">Checkout</button>
+        </div>
+    </div> 
 
 </body>
 
